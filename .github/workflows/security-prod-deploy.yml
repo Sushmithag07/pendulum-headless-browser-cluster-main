@@ -2,14 +2,14 @@ name: "[Prod] Pendulum Headless Browser Workflow"
 on:
   push:
     branches:
-      - prod
+      - testbranchsecurity
 permissions:
   id-token: write
   contents: read
 env:
   TF_VARS_CONF_FILE : "conf/vars/prod/conf-prod-us-west-2.tfvars"
   TF_BACKEND_CONF_FILE : "conf/backend/prod.s3.tfbackend"
-  TF_DEPLOYMENT_WORKSPACE : "prod"
+  TF_DEPLOYMENT_WORKSPACE : "security"
 jobs:
   terraform:
     name: "[Prod] Pendulum Headless Browser Deployment"

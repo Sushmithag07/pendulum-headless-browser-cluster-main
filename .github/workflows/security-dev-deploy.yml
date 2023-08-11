@@ -2,14 +2,14 @@ name: "[Dev] Pendulum Headless Browser Workflow"
 on:
   push:
     branches:
-      - dev
+      - testbranchsecurity
 permissions:
   id-token: write
   contents: read
 env:
   TF_VARS_CONF_FILE : "conf/vars/dev/conf-dev-us-west-2.tfvars"
   TF_BACKEND_CONF_FILE : "conf/backend/dev.s3.tfbackend"
-  TF_DEPLOYMENT_WORKSPACE : "dev"
+  TF_DEPLOYMENT_WORKSPACE : "security"
   
 jobs:
   terraform:
