@@ -1,0 +1,64 @@
+name: "[Dev] Pendulum Headless Browser Workflow"
+on:
+  push:
+    branches:
+      - dev
+permissions:
+  id-token: write
+  contents: read
+env:
+  TF_VARS_CONF_FILE : "conf/vars/dev/conf-dev-us-west-2.tfvars"
+  TF_BACKEND_CONF_FILE : "conf/backend/dev.s3.tfbackend"
+  TF_DEPLOYMENT_WORKSPACE : "dev"
+  
+jobs:
+  terraform:
+    name: "[Dev] Pendulum Headless Browser Deployment"
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3.9
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-region: us-west-2
+          role-to-assume: arn:aws:iam::545704012723:role/github-workflow-aws-integration-role
+          role-duration-seconds: 3600
+
+      - name: Terraform fmt
+        id: fmt
+        working-directory: ./infra
+        run: terraform fmt -check
+
+      - name: Terraform Init
+        id: init
+        working-directory: ./infra
+        run: terraform init -backend-config="$TF_BACKEND_CONF_FILE"
+        env:
+          GIT_SSH_COMMAND: "echo '${{ secrets.ORG_PRIVATE_SSH_KEY }}' > id_rsa
+          && ssh-keyscan github.com > known_hosts
+          && chmod 600 id_rsa known_hosts
+          && ssh -i ./id_rsa -o UserKnownHostsFile=./known_hosts"        
+
+      - name: Terraform Set Workspace
+        id: workspace
+        working-directory: ./infra
+        run: terraform workspace select $TF_DEPLOYMENT_WORKSPACE || terraform workspace new $TF_DEPLOYMENT_WORKSPACE
+
+      - name: Terraform Validate
+        id: validate
+        working-directory: ./infra
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        working-directory: ./infra
+        run: terraform plan -var-file="$TF_VARS_CONF_FILE" -out="${{github.ref_name}}-${{github.run_number}}.plan"
+
+      - name: Terraform Apply
+        id: apply
+        working-directory: ./infra
+        run: terraform apply "${{github.ref_name}}-${{github.run_number}}.plan"
