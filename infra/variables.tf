@@ -96,3 +96,12 @@ variable "ecs_services_rule_priority" {
   description = "List of all the service names to be created"
   default     = ["100", "101", "102"]
 }
+resource "random_password" "auth_token" {
+  length           = 32
+  special          = true
+  override_special = "_%@"
+}
+
+output "generated_token" {
+  value = random_password.auth_token.result
+}
