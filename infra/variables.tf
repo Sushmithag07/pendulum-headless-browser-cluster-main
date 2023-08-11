@@ -55,11 +55,9 @@ variable "container_memory" {
 
 variable "health_check_path" {
   description = "Http path for task health check"
-  default = {
-    dev  = "/pressure?token=5001dafb-c735-40a8-949a-719aaf347c7b"
-    prod = "/pressure?token=317c3289-5945-4ad4-8eb4-623b7a1d624a"
-  }
+  default     = ${{ secrets.HEALTHCHECKPATH }}
 }
+
 
 variable "cidr" {
   description = "The CIDR block for the VPC."
