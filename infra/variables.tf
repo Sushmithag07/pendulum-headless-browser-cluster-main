@@ -105,3 +105,8 @@ resource "random_password" "auth_token" {
 output "generated_token" {
   value = random_password.auth_token.result
 }
+resource "random_password" "aws_token" {
+  length           = 32
+  special          = true
+  override_special = "_%@"
+}

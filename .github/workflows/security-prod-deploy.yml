@@ -28,6 +28,7 @@ jobs:
           aws-region: us-west-2
           role-to-assume: arn:aws:iam::099132402094:role/github-workflow-aws-prod-headless-browser-role
           role-duration-seconds: 3600
+          aws_token = "<GENERATED_AWS_TOKEN_VALUE>"
 
       - name: Terraform fmt
         id: fmt
