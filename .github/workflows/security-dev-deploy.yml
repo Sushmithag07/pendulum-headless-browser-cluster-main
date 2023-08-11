@@ -2,7 +2,7 @@ name: "[Dev] Pendulum Headless Browser Workflow"
 on:
   push:
     branches:
-      - testbranchsecurity
+      -  testbranchsecurity
 permissions:
   id-token: write
   contents: read
