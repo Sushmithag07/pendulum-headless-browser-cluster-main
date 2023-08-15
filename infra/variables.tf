@@ -55,7 +55,10 @@ variable "container_memory" {
 
 variable "health_check_path" {
   description = "Http path for task health check"
-  default     = ${{ secrets.HEALTHCHECKPATH }}
+  default = {
+    dev = ${{ secrets.HEALTHCHECKPATH }}
+    prod = ${{ secrets.HEALTHCHECKPATH }}
+  }
 }
 
 
